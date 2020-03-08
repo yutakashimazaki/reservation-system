@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/ fb# website: http://ogp.me/ns/ website#">
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta property="og:url" content="http://127.0.0.1/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Reservation System" />
+  <meta property="og:description" content=" ページのディスクリプション" />
+  <meta property="og:site_name" content="Mask R-CNN による物体検出" />
+  <meta property="og:image" content="" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/details.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/slider.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <title>Reservation System</title>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+        <a class="logo" href="/"　target="_blank"><img src="{{ url_for('static', filename='img/icon_logo.png') }}" /></a>
+
+        <!--<div class="menue">
+            <a href=""　target="_blank">Menu1</a>
+            <a href=""　target="_blank">Menu2</a>
+            <a href=""　target="_blank">Menu3</a>
+        </div>-->
+    </div>
+  </div>
+  <div class="main">
+{% block content %}
+<!-- ここに個別部分が挿入される -->
+{% endblock %}
+  </div>
+  <div class="footer">
+    <div class="sns-logo">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fsample.com%2F&amp;src=sdkpreparse" class="btn-sns">
+        <i class="fab fa-facebook"></i></a>
+
+        <a href="https://twitter.com/share?url=http://sample.com/" class="btn-sns">
+        <i class="fab fa-twitter"></i></a>
+
+        <a href="https://social-plugins.line.me/lineit/share?url=http://sample.com/" class="btn-sns">
+        <i class="fab fa-line"></i></a>
+    </div>
+  </div>
+</body>
+</html>
