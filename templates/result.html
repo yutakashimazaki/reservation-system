@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="confirm-back">
+  {% if bookingId %}
+    <h2>Completed</h2>
+    <div class="confirm-wrap">
+      <div class="reserve-comp">
+        <i class="far fa-calendar-check"></i>
+        <p>ご予約ありがとうございます。<br>
+          確認メールを {{ session['usermail'] }} にお送りしますので、<br>
+          ご確認ください。</p>
+        <h3>予約番号 : {{ bookingId }}</h3>
+        <span>※必ずお控えください。</span>
+      </div>
+      <div class="reserve-contents">
+        <h2>予約内容</h2>
+        <dl>
+          <dt>rental space</dt>
+          <dd>SPACE A</dd>
+          <dt>rental date</dt>
+          {% if session['datesToBeBooked'] | length == 1 %}
+            <dd>{{ session['datesToBeBooked'][0] }}</dd>
+          {% else %}
+            <dd>{{ session['datesToBeBooked'][0] }} ~ {{ session['datesToBeBooked'][-1] }}</dd>
+          {% endif %}
+          <dt>hour</dt>
+          <dd>10:00~22:00</dd>
+          <dt>charge</dt>
+          <dd>{{ session['chargeAll'] }}円</dd>
+          <p>※お支払いは現地で承ります。</p>
+        </dl>
+      </div>
+    </div>
+  {% else %}
+    <h2>Failed</h2>
+    <div class="confirm-wrap">
+      <div class="reserve-comp">
+        <p>ご予約できませんでした。<br>
+          もう一度やり直してください。</p>
+        <span><a href="/details/space-a">SPACE A の予約はこちら</a></span>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

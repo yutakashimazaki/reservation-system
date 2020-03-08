@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="confirm-back">
+  <h2>Confirmation</h2>
+  <div class="confirm-wrap">
+    <div class="reserve-contents">
+      <img src="{{ url_for('static', filename='img/space_a.jpg') }}" />
+      <dl>
+        <dt>rental space</dt>
+        <dd>SPACE A</dd>
+        <dt>rental date</dt>
+        {% if session['datesToBeBooked'] | length == 1 %}
+          <dd>{{ session['datesToBeBooked'][0] }}</dd>
+        {% else %}
+          <dd>{{ session['datesToBeBooked'][0] }} ~ {{ session['datesToBeBooked'][-1] }}</dd>
+        {% endif %}
+        <dt>hour</dt>
+        <dd>10:00~22:00</dd>
+        <dt>charge</dt>
+        <dd>{{ charge }}円 × {{ session['datesToBeBooked'] | length }}日<br>
+            = {{ session['chargeAll'] }}円</dd>
+        <p>※お支払いは現地で承ります。</p>
+      </dl>
+    </div>
+    <button class="confirm-btn"><a href="/result/space-a">予約確定</a></button>
+  </div>
+</div>
+{% endblock %}

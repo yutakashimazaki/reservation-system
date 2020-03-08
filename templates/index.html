@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="contents-header">
+  <h1>Rental Space List</h1>
+</div>
+<div class="space-list">
+  <div class="list-inner">
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/details/space-a"><img src="{{ url_for('static', filename='img/space_a.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/details/space-a">SPACE-A</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 1F</dd>
+            <dt>tell</dt>
+            <dd>03-XXXX-XXXX</dd>
+            <dt>hour</dt>
+            <dd>10:00~22:00</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/details/space-b"><img src="{{ url_for('static', filename='img/space_b.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/details/space-b">SPACE-B</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 2F</dd>
+            <dt>tell</dt>
+            <dd>03-XXXX-XXXX</dd>
+            <dt>hour</dt>
+            <dd>10:00~22:00</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/details/space-c"><img src="{{ url_for('static', filename='img/space_c.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/details/space-c">SPACE-C</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 3F</dd>
+            <dt>tell</dt>
+            <dd>03-XXXX-XXXX</dd>
+            <dt>hour</dt>
+            <dd>10:00~22:00</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/details/space-d"><img src="{{ url_for('static', filename='img/space_d.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/details/space-d">SPACE-D</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 4F</dd>
+            <dt>tell</dt>
+            <dd>03-XXXX-XXXX</dd>
+            <dt>hour</dt>
+            <dd>10:00~22:00</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
