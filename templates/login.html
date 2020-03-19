@@ -4,15 +4,15 @@
   <h2>Login</h2>
   <div class="login-wrap">
     <!-- <p>メールアドレスとパスワードを入力</p> -->
-    <form action="/login" method="post" class="login-form">
+    <form action="/login" method="post" class="login-form" id="signinForm">
       <div class="login-input">
         <!-- <input type="email" name="usermail" required="required" placeholder="mail address" aria-label="mail address"> -->
-        <input type="email" name="usermail" required="required" aria-label="mail address">
+        <input type="email" id="emailInputSignin" name="usermail" required="required" aria-label="mail address">
         <label>mail address</label>
       </div>
       <div class="login-input">
         <!-- <input type="password" name="userpass" required="required" placeholder="password" aria-label="password"> -->
-        <input type="password" name="userpass" required="required" aria-label="password">
+        <input type="password" id="passwordInputSignin" name="userpass" required="required" aria-label="password">
         <label>password</label>
       </div>
       <button type="submit" >login</button>
@@ -20,4 +20,11 @@
     </form>
   </div>
 </div>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+<script src="{{ url_for('static', filename='js/jquery-3.1.0.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aws-cognito-sdk.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/amazon-cognito-identity.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/config.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cognito-auth.js') }}"></script>
 {% endblock %}

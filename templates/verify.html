@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="register-back">
+  <h2>Register</h2>
+  <div class="register-wrap">
+    <form action="/register" method="post" class="register-form" id="verifyForm">
+      <div class="register-input">
+        <input type="email" id="emailInputVerify" name="usermail" required="required" aria-label="mail address">
+        <label>mail address</label>
+      </div>
+      <div class="register-input">
+        <input type="text" id="codeInputVerify" name="code" required="required" aria-label="code">
+        <label>code</label>
+      <button type="submit" >register</button>
+    </form>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery-3.1.0.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aws-cognito-sdk.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/amazon-cognito-identity.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/config.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cognito-auth.js') }}"></script>
+{% endblock %}

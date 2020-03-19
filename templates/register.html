@@ -13,22 +13,40 @@
     </div>
   {% else %}
     <div class="register-wrap">
-      <form action="/register" method="post" class="register-form">
+      <form action="/register" method="post" class="register-form" id="registrationForm">
         <div class="register-input">
-          <input type="email" name="usermail" required="required" aria-label="mail address">
+          <input type="email" id="emailInputRegister" name="usermail" required="required" aria-label="mail address">
           <label>mail address</label>
         </div>
         <div class="register-input">
-          <input type="password" name="userpass" required="required" aria-label="password">
+          <input type="password" id="passwordInputRegister" name="userpass" required="required" aria-label="password">
           <label>password</label>
         </div>
         <div class="register-input">
-          <input type="password" name="confirm-pass" required="required" aria-label="confirm-pass">
+          <input type="password" id="confirmPassInputRegister" name="confirm-pass" required="required" aria-label="confirm pass">
           <label>confirm password</label>
+        </div>
+        <div class="register-input">
+          <input type="text" id="nameInputRegister" name="name" required="required" aria-label="name">
+          <label>name</label>
+        </div>
+        <div class="register-input">
+          <input type="text" id="addressInputRegister" name="address" required="required" aria-label="address">
+          <label>address</label>
+        </div>
+        <div class="register-input">
+          <input type="text" id="phoneNumInputRegister" name="phone-number" required="required" aria-label="phone number">
+          <label>phone number</label>
         </div>
         <button type="submit" >get a code</button>
       </form>
     </div>
   {% endif %}
 </div>
+<script src="{{ url_for('static', filename='js/jquery-3.1.0.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aws-cognito-sdk.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/amazon-cognito-identity.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/config.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cognito-auth.js') }}"></script>
 {% endblock %}

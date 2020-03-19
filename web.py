@@ -49,11 +49,7 @@ def reserve_a():
     # ここで予約のチェック引数:datesToBeBooked 戻り値:bool
     if 0 == 0:
         session['datesToBeBooked'] = datesToBeBooked
-        # ログインチェック
-        if 'usermail' in session: # ログイン済の場合
-            return redirect(url_for('confirm_a'))
-        else:
-            return redirect(url_for('login'))
+        return redirect(url_for('confirm_a'))
 
     # 予約日がダメな場合
     return render_template('result.html')
@@ -97,29 +93,23 @@ def result_a():
 
 
 # ログイン
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
-    if request.method == 'POST':
-        # ログイン処理
-        session['usermail'] = request.form.get('usermail')
+    return render_template('login.html')
 
-        if 'datesToBeBooked' in session:
-            return redirect(url_for('confirm_a'))
-
-        # 予約日がセッションになければスペース詳細ページへ遷移
-        return redirect(url_for('space_a'))
-
-    else:
-      return render_template('login.html')
+# @app.route('/after-login')
+# def login():
+#     return render_template('login.html')
 
 # 会員登録
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register')
 def register():
-    if request.method == 'POST':
-        return render_template('register.html', validation=1)
+    return render_template('register.html')
 
-    else:
-      return render_template('register.html')
+# 会員登録
+@app.route('/verify')
+def verify():
+    return render_template('verify.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
