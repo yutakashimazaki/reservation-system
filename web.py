@@ -4,7 +4,6 @@ import configparser
 import subprocess
 import random
 import datetime
-import cv2
 from datetime import datetime, date, timedelta
 
 from flask import Flask, render_template, request, redirect, url_for, session
