@@ -34,7 +34,7 @@ function createCalendar(year, month) {
     const startDay = startDate.getDay(); // 月の最初の日の曜日を取得
     let dayCount = 1; // 日にちのカウント
     let calendarHtml = ''; // HTMLを組み立てる変数
-    const datesToBeBooked = getBookedDates(year, month); //予約されている日
+    const bookedDates = getBookedDates(year, month); //予約されている日
 
     calendarHtml += '<h1>' + year  + '年' + month + '月</h1>';
     calendarHtml += '<table>';
@@ -58,7 +58,7 @@ function createCalendar(year, month) {
               //本日以前の日にち
               calendarHtml += '<td class="day past"><div>' + dayCount + '</div></td>';
               dayCount++;
-          } else if (datesToBeBooked.includes(dayCount)) {
+          } else if (bookedDates.includes(dayCount)) {
               calendarHtml += `<td class="day disable"><div>` + dayCount + '</div></td>';
               dayCount++;
           } else {
@@ -110,13 +110,30 @@ function moveCalendar(e) {
     createCalendar(year, month);
 }
 
-// 予約済の日を取得する関数
-function getBookedDates(year, month) {
-  const datesToBeBooked = [];
-  datesToBeBooked.push(4);
-  datesToBeBooked.push(12);
+// CSVファイルから予約済の日を取得する関数
+function getBookedDates(year, month){
+    const bookedDates = [];
+    const bookedDays = [];
+    let req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+    req.open("get", 'http://0.0.0.0/static/csv/bookedDates.csv', false); // アクセスするファイルを指定(同期処理)
+    req.send(null); // HTTPリクエストの発行
 
-  return datesToBeBooked;
+    // トランザクション完了後，ステータスコードが200の場合
+    if(req.status === 200) {
+       let tmp = req.responseText.split('\n'); // 改行を区切り文字として行を要素とした配列を生成
+
+       // 各行ごとにカンマで区切った文字列を要素とした3次元配列を生成
+       for(let i = 0; i < tmp.length ; i++){
+           // year, month, day
+           bookedDates[i] = tmp[i].split(',');
+       }
+       for (let i = 0; i < bookedDates.length - 1; i++) {
+           if (Number(bookedDates[i][0]) === year && Number(bookedDates[i][1]) === month ) {
+               bookedDays.push(Number(bookedDates[i][2]));
+           }
+       }
+    }
+    return bookedDays;
 }
 
 createCalendar(year, month); //最初にカレンダーを表示

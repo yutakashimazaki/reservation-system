@@ -35,8 +35,13 @@
     <h2>Failed</h2>
     <div class="confirm-wrap">
       <div class="reserve-comp">
-        <p>ご予約できませんでした。<br>
-          もう一度やり直してください。</p>
+        {% if message %}
+          <p>{{ message }}</p>
+          <p>もう一度やり直してください。</p>
+        {% else %}
+          <p>ご予約できませんでした。<br>
+            もう一度やり直してください。</p>
+        {% endif %}
         <span><a href="/details/space-a">SPACE A の予約はこちら</a></span>
       </div>
     </div>
