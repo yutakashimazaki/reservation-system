@@ -8,8 +8,9 @@ from datetime import datetime, date, timedelta
 
 from flask import Flask, render_template, request, redirect, url_for, session
 
-from functions.mysql import checkBooking, executeBooking, exportBookedDates, cancelReservation
-from functions.mail import sendConfirmReservingMail, sendCancelReservationMail
+from functions.reservation import checkBooking, executeBooking, exportBookedDates, cancelReservation
+from functions.mail import sendMail
+from functions.authentication import loginUser, registerUser, tempRegisterUser, generateValidateCode
 
 # config.ini の読み込み
 if os.path.exists('./config.ini') :
@@ -98,6 +99,9 @@ def reserve_a():
 # 予約確認
 @app.route('/confirm/space-a')
 def confirm_a():
+    if not ('usermail' in session):
+        return redirect(url_for('login'))
+
     if 'datesToBeBooked' in session:
         # 料金の計算
         charge = 25000
@@ -115,6 +119,9 @@ def confirm_a():
 # 結果画面
 @app.route('/result/space-a')
 def result_a():
+    if not ('usermail' in session):
+        return redirect(url_for('login'))
+
     if 'datesToBeBooked' in session:
         bookingDates = []
         datesToBeBooked = session['datesToBeBooked']
@@ -132,6 +139,7 @@ def result_a():
         # 予約の処理（DBに入れる） 戻り値：予約番号
         bookingId = executeBooking(bookingDates, usermail)
         # メールを送信
+        subject = 'ご予約の確認'
         message = 'この度はご予約いただきまして誠にありがとうございます。\n'
         message += 'ご予約が完了いたしましたのでご案内申し上げます。\n\n'
         message += '<ご予約内容>\n'
@@ -142,7 +150,7 @@ def result_a():
         message += '※このメールは自動配信されています。\n'
         message += 'このメールに返信してのお問い合わせなどにはお応えできません。\n'
 
-        sendConfirmReservingMail(session['usermail'], message)
+        sendMail(session['usermail'], subject, message)
         return render_template('result.html', bookingId=bookingId)
 
     # セッションタイムアウト等で「datesToBeBooked」の値が空のとき
@@ -151,12 +159,19 @@ def result_a():
 # キャンセル画面
 @app.route('/cancel/space-a', methods=['GET', 'POST'])
 def cancel_a():
+    if not ('usermail' in session):
+        session['cancelRequest'] = True
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         bookingId = request.form.get('bookingId')
         usermail = cancelReservation(bookingId)
-        # メールを送信
-        message = '予約番号: ' + bookingId + ' のご予約をキャンセルしました。'
-        sendCancelReservationMail(usermail, message)
+        if usermail:
+            # メールを送信
+            subject = 'ご予約キャンセルの確認'
+            message = '予約番号: ' + bookingId + ' のご予約をキャンセルしました。'
+            sendMail(usermail, subject, message)
+            session.pop('cancelRequest', None)
         return render_template('cancel_result.html', bookingId=bookingId, usermail=usermail)
     else:
         return render_template('cancel.html')
@@ -165,11 +180,26 @@ def cancel_a():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # ログイン処理
-        session['usermail'] = request.form.get('usermail')
+        mail = request.form.get('usermail')
+        password = request.form.get('userpass')
+        result = loginUser(mail, password)
+
+        # ログイン失敗
+        if result == 0:
+            return render_template('login.html', errMsg='このメールアドレスは登録されていません')
+        elif result == -1:
+            return render_template('login.html', errMsg='パスワードが間違っています')
+        elif result == -2:
+            return render_template('login.html', errMsg='アカウントのメール認証がされていません')
+
+        session['usermail'] = mail
 
         if 'datesToBeBooked' in session:
             return redirect(url_for('confirm_a'))
+        elif 'cancelRequest' in session:
+            return redirect(url_for('cancel_a'))
+        elif 'accountRequest' in session:
+            return redirect(url_for('account'))
 
         # 予約日がセッションになければスペース詳細ページへ遷移
         return redirect(url_for('space_a'))
@@ -177,14 +207,68 @@ def login():
     else:
       return render_template('login.html')
 
+# ログアウト
+@app.route('/logout')
+def logout():
+    session.pop('usermail', None)
+    return redirect(url_for('index'))
+
 # 会員登録
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        return render_template('register.html', validation=1)
+        mail = request.form.get('usermail')
+        password = request.form.get('userpass')
+        firstName = request.form.get('firstName')
+        lastName = request.form.get('lastName')
+        phone = request.form.get('phone')
+        company = request.form.get('company')
+        tempPass = generateValidateCode()
+
+        # エラーの場合
+        if tempRegisterUser(mail, password, phone, firstName, lastName, company, tempPass) == 0:
+            return render_template('register.html', errMsg='このメールアドレスは既に登録されています')
+
+        # メールを送信
+        subject = '会員登録'
+        message = 'まだ登録は完了していません。\n\n'
+        message += '認証コードは ' + tempPass + ' です。\n\n'
+        message += '下記URLから認証ページに移動できます。\nhttp://0.0.0.0/verify'
+        sendMail(mail, subject, message)
+        return redirect(url_for('verify'))
 
     else:
       return render_template('register.html')
+
+# 会員登録
+@app.route('/verify', methods=['GET', 'POST'])
+def verify():
+    if request.method == 'POST':
+        mail = request.form.get('usermail')
+        code = request.form.get('code')
+        result = registerUser(mail, code)
+
+        # エラーの場合
+        if result == 0:
+            return render_template('verify.html', errMsg='メールアドレスが間違っています')
+        elif result == -1:
+            return render_template('verify.html', errMsg='認証コードが違います')
+
+        # メールを送信
+        subject = '会員登録完了'
+        message = '登録が完了しました。\n'
+        sendMail(mail, subject, message)
+        return redirect(url_for('login'))
+
+# マイページ
+@app.route('/account')
+def account():
+    if not ('usermail' in session):
+        session['accountRequest'] = True
+        return redirect(url_for('login'))
+
+    session.pop('accountRequest', None)
+    return render_template('account.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)

@@ -27,21 +27,8 @@ def createMessage(toAddress, subject, body):
     msg['Date'] = formatdate()
     return msg
 
-# 予約確認メール送信
-def sendConfirmReservingMail(toAddress, body):
-    subject = 'ご予約の確認'
-    msg = createMessage(toAddress, subject, body)
-    smtpobj = smtplib.SMTP('smtp.gmail.com', 587)
-    smtpobj.ehlo()
-    smtpobj.starttls()
-    smtpobj.ehlo()
-    smtpobj.login(config.get('Email', 'fromAddress'), config.get('Email', 'password'))
-    smtpobj.sendmail(config.get('Email', 'fromAddress'), toAddress, msg.as_string())
-    smtpobj.close()
-
-# 予約確認メール送信
-def sendCancelReservationMail(toAddress, body):
-    subject = 'ご予約キャンセルの確認'
+# メール送信
+def sendMail(toAddress, subject, body):
     msg = createMessage(toAddress, subject, body)
     smtpobj = smtplib.SMTP('smtp.gmail.com', 587)
     smtpobj.ehlo()
