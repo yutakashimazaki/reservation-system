@@ -219,10 +219,10 @@ def register():
     if request.method == 'POST':
         mail = request.form.get('usermail')
         password = request.form.get('userpass')
-        firstName = request.form.get('firstName')
-        lastName = request.form.get('lastName')
+        firstName = request.form.get('firstName').encode('utf-8')
+        lastName = request.form.get('lastName').encode('utf-8')
         phone = request.form.get('phone')
-        company = request.form.get('company')
+        company = request.form.get('company').encode('utf-8')
         tempPass = generateValidateCode()
 
         # エラーの場合
@@ -259,6 +259,8 @@ def verify():
         message = '登録が完了しました。\n'
         sendMail(mail, subject, message)
         return redirect(url_for('login'))
+    else:
+      return render_template('verify.html')
 
 # マイページ
 @app.route('/account')

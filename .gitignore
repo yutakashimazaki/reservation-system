@@ -2,4 +2,6 @@
 
 config.ini
 
+test.py
+
 __pycache__/
