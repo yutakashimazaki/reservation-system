@@ -27,6 +27,23 @@
   text-indent: 15px;
   outline: 0;
 }
+.register-input-parallel {
+  display: inline-block;
+  position: relative;
+  width: calc(50% - 14px);
+}
+.parallel-left {
+  margin-right: 20px;
+}
+.register-input-parallel input{
+  margin-bottom: 30px;
+  display: block;
+  width: 100%;
+  height: 50px;
+  font-size: 14px;
+  text-indent: 15px;
+  outline: 0;
+}
 
 .register-form label{
   position: absolute;
@@ -41,6 +58,24 @@
   pointer-events: none;
   transform: translateY(2px);
   /* transition: all 0.5s ease-in-out; */
+}
+#pass-msg {
+  position: absolute;
+  top: calc(100% - 20px);
+  left: 10px;
+  padding: 0 5px;
+  font-size: 12px;
+  color: #555;
+  background-color: #fff;
+}
+#comf-msg {
+  position: absolute;
+  top: calc(100% - 20px);
+  left: 10px;
+  padding: 0 5px;
+  font-size: 12px;
+  color: #555;
+  background-color: #fff;
 }
 
 .register-form button {
@@ -62,4 +97,11 @@
 .register-form button:hover {
   /* background: #8d7943; */
   background: #3c3a38;
+}
+#validate-msg {
+  display: block;
+  margin: -10px auto 10px auto;
+  text-align: center;
+  font-size: 14px;
+  color: red;
 }

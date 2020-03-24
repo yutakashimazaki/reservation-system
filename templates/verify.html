@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- CSSはregister.cssを借用 -->
+<div class="register-back">
+  <h2>Verification</h2>
+    <div class="register-wrap">
+      <form action="/verify" method="post" class="register-form">
+        {% if errMsg %}
+          <p class="err-msg">{{ errMsg }}</p>
+        {% endif %}
+        <div class="register-input">
+          <input type="email" name="usermail" required="required" aria-label="mail address">
+          <label>mail address</label>
+        </div>
+        <div class="register-input">
+          <input type="text" name="code" required="required" aria-label="code">
+          <label>code</label>
+        <button type="submit" >register</button>
+      </form>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/passwordchecker.js') }}"></script>
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}

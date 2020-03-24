@@ -5,6 +5,9 @@
   <div class="login-wrap">
     <!-- <p>メールアドレスとパスワードを入力</p> -->
     <form action="/login" method="post" class="login-form">
+      {% if errMsg %}
+        <p class="err-msg">{{ errMsg }}</p>
+      {% endif %}
       <div class="login-input">
         <!-- <input type="email" name="usermail" required="required" placeholder="mail address" aria-label="mail address"> -->
         <input type="email" name="usermail" required="required" aria-label="mail address">

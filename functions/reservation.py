@@ -31,7 +31,6 @@ def exportBookedDates():
     print('connection is successful')
 
     cursor = conn.cursor()
-    result = []
 
     try:
         cursor.execute('select date from sapace_a')
@@ -46,7 +45,6 @@ def exportBookedDates():
     except Exception as e :
         print(str(e))
     finally:
-        conn.commit()
         cursor.close()
         conn.close()
 
@@ -123,15 +121,18 @@ def cancelReservation(bookingId):
 
     print('connection is successful')
     cursor = conn.cursor()
-    usermail = None
+    result = None
 
     try:
-        cursor.execute('select usermail from sapace_a where bookingId=%s', (bookingId,))
+        cursor.execute('select usermail, date from sapace_a where bookingId=%s', (bookingId,))
         fetch = cursor.fetchone()
         if fetch:
             usermail = str(fetch[0])
-            cursor.execute('delete from sapace_a where bookingId=%s', (bookingId,))
-            print('canceling reserved date is successful')
+            date = fetch[1]
+            if date >= datetime.now().date(): # 本日以降の日に限る
+                cursor.execute('delete from sapace_a where bookingId=%s', (bookingId,))
+                result = usermail
+                print('canceling reserved date is successful')
         else: # 予約番号がないとき
             print('this booking number is nothing')
 
@@ -142,4 +143,4 @@ def cancelReservation(bookingId):
         cursor.close()
         conn.close()
 
-    return usermail
+    return result

@@ -36,6 +36,15 @@ body {
   opacity: 0.85;
   height: 100%;
 }
+
+.account {
+  position: absolute;
+  top: 37px;
+  right: 150px;
+  font-size: 22px;
+  color: #3a3937;
+  text-decoration: none;
+}
 /*
 .menue {
     display: block;
