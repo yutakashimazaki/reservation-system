@@ -1,33 +1,33 @@
-.reserve-comp {
+.result-block {
   width: calc(100% - 40px);
-  padding: 20px;
+  padding: 30px 20px;
   background: #4d4b49;
   text-align: center;
   color: #fff;
   font-size: 16px;
 }
-.reserve-comp i {
-  padding: 15px;
+.result-block i {
+  padding-bottom: 15px;
   font-size: 22px;
 }
-.reserve-comp p {
+.result-block p {
   margin-top: 0;
 }
-.reserve-comp h3 {
+.result-block h3 {
   margin-top: 30px;
   margin-bottom: 0;
   font-size: 18px;
   font-weight: 700;
 }
-.reserve-comp span {
+.result-block span {
   margin-top: 30px;
   font-size: 12px;
 }
-.reserve-comp span a{
+.result-block span a{
   text-decoration: none;
   color: #fff;
 }
-.reserve-comp span a:hover{
+.result-block span a:hover{
   text-decoration: underline;
 }
 
@@ -36,4 +36,36 @@
   text-align: center;
   font-size: 18px;
   color: #444;
+}
+.reserve-comp {
+  padding-bottom: 0;
+  background: linear-gradient(to bottom, #fff, #fafafa);
+}
+
+.back-to-top-btn {
+  display: block;
+  margin: 80px auto 100px auto;
+  width: 400px;
+  height: 50px;
+  letter-spacing: 0.2rem;
+  background: #3c3a38;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  line-height: 50px;
+  font-size: 16px;
+  font-weight: 300;
+  text-indent: 15px;
+  letter-spacing: 0.2rem;
+  color: #fff;
+  border: solid thin #3c3a38;
+}
+.back-to-top-btn:hover {
+  background-color: inherit;
+  color: #222;
+  font-weight: 350;
+  transition: .3s;
+}
+.reserve-comp-btn {
+  margin-top: 40px;
 }

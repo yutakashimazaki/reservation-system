@@ -7,72 +7,72 @@
   <div class="list-inner">
     <div class="space-block">
       <div class="space-img">
-        <a href="/details/space-a"><img src="{{ url_for('static', filename='img/space_a.jpg') }}" /></a>
+        <a href="/space_a/details"><img src="{{ url_for('static', filename='img/space_a.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
-          <h3><a href="/details/space-a">SPACE-A</a></h3>
+          <h3><a href="/space_a/details">{{ allSpaceInfo['space_a'].name }}</a></h3>
           <dl>
             <dt>address</dt>
-            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 1F</dd>
+            <dd>{{ allSpaceInfo['space_a'].address }}</dd>
             <dt>tell</dt>
-            <dd>03-XXXX-XXXX</dd>
+            <dd>{{ allSpaceInfo['space_a'].tell }}</dd>
             <dt>hour</dt>
-            <dd>10:00~22:00</dd>
+            <dd>{{ allSpaceInfo['space_a'].startTime }}~{{ allSpaceInfo['space_a'].endTime }}</dd>
           </dl>
         </div>
       </div>
     </div>
     <div class="space-block">
       <div class="space-img">
-        <a href="/details/space-b"><img src="{{ url_for('static', filename='img/space_b.jpg') }}" /></a>
+        <a href="/space_b/details"><img src="{{ url_for('static', filename='img/space_b.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
-          <h3><a href="/details/space-b">SPACE-B</a></h3>
+          <h3><a href="/space_b/details">{{ allSpaceInfo['space_b'].name }}</a></h3>
           <dl>
             <dt>address</dt>
-            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 2F</dd>
+            <dd>{{ allSpaceInfo['space_b'].address }}</dd>
             <dt>tell</dt>
-            <dd>03-XXXX-XXXX</dd>
+            <dd>{{ allSpaceInfo['space_b'].tell }}</dd>
             <dt>hour</dt>
-            <dd>10:00~22:00</dd>
+            <dd>{{ allSpaceInfo['space_b'].startTime }}~{{ allSpaceInfo['space_b'].endTime }}</dd>
           </dl>
         </div>
       </div>
     </div>
     <div class="space-block">
       <div class="space-img">
-        <a href="/details/space-c"><img src="{{ url_for('static', filename='img/space_c.jpg') }}" /></a>
+        <a href="/space_c/details"><img src="{{ url_for('static', filename='img/space_c.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
-          <h3><a href="/details/space-c">SPACE-C</a></h3>
+          <h3><a href="/space_c/details">{{ allSpaceInfo['space_c'].name }}</a></h3>
           <dl>
             <dt>address</dt>
-            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 3F</dd>
+            <dd>{{ allSpaceInfo['space_c'].address }}</dd>
             <dt>tell</dt>
-            <dd>03-XXXX-XXXX</dd>
+            <dd>{{ allSpaceInfo['space_c'].tell }}</dd>
             <dt>hour</dt>
-            <dd>10:00~22:00</dd>
+            <dd>{{ allSpaceInfo['space_c'].startTime }}~{{ allSpaceInfo['space_c'].endTime }}</dd>
           </dl>
         </div>
       </div>
     </div>
     <div class="space-block">
       <div class="space-img">
-        <a href="/details/space-d"><img src="{{ url_for('static', filename='img/space_d.jpg') }}" /></a>
+        <a href="/space_d/details"><img src="{{ url_for('static', filename='img/space_d.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
-          <h3><a href="/details/space-d">SPACE-D</a></h3>
+          <h3><a href="/space_d/details">{{ allSpaceInfo['space_d'].name }}</a></h3>
           <dl>
             <dt>address</dt>
-            <dd>〒XXX-XXX 東京都渋谷区恵比寿 X-XX-XX XXX 4F</dd>
+            <dd>{{ allSpaceInfo['space_d'].address }}</dd>
             <dt>tell</dt>
-            <dd>03-XXXX-XXXX</dd>
+            <dd>{{ allSpaceInfo['space_d'].tell }}</dd>
             <dt>hour</dt>
-            <dd>10:00~22:00</dd>
+            <dd>{{ allSpaceInfo['space_d'].startTime }}~{{ allSpaceInfo['space_d'].endTime }}</dd>
           </dl>
         </div>
       </div>

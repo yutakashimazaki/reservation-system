@@ -7,13 +7,15 @@
 }
 .confirm-wrap {
   margin: 40px auto;
-  padding-bottom: 40px;
   width: 600px;
-  background: #fff;
+  background: linear-gradient(to bottom, #fff, #fefefe);
   border-radius: 2px;
   box-shadow: 0 -2px 1px 0.5px #eee;
 }
 
+.reserve-contents {
+  padding-bottom: 40px;
+}
 .reserve-contents img {
   width: calc(100% - 50px);
   margin: 0 auto;

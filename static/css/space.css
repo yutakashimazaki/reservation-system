@@ -51,11 +51,13 @@
 }
 .nav ul li a {
   display: block;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-/*===================== スペース詳細部分 ====================*/
-/*------------- 全体 ------------*/
-.details-block {
+/*===================== スペース説明ブロック ====================*/
+.rentalspace-block {
   margin: 0 auto;
   padding-bottom: 40px;
   background: linear-gradient(to bottom, #f2f2f2, #fff);
@@ -63,11 +65,12 @@
 }
 .block-inner {
   margin: 0 auto;
-  padding: 60px 0;
+  padding: 60px 0 120px 0;
   max-width: 1020px;
-  background: #fff;
+  background: linear-gradient(to bottom, #fff, #fdfdfd);
   position: relative;
 }
+/*===================== スペース詳細部分 ====================*/
 /*------------- スペースインフォ部分 ------------*/
 .space-info {
   margin: 0;
@@ -274,6 +277,12 @@ select:-moz-focusring {
 }
 .reserve-btn:focus {
   outline: 0;
+}
+
+/*===================== スペース備品部分 ====================*/
+.unfinished {
+  margin: 100px;
+  text-align: center;
 }
 
 /*===================== コラム部分 ====================*/
