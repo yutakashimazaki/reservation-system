@@ -28,7 +28,8 @@ def exportBookedDates(rentalSpace):
         host = config.get('MySQL', 'hostname'),
         user = config.get('MySQL', 'user'),
         passwd = config.get('MySQL', 'password'),
-        db = config.get('MySQL', 'schema'))
+        db = config.get('MySQL', 'schema'),
+        charset = config.get('MySQL', 'charset'))
 
     print('connection is successful')
 
@@ -60,7 +61,8 @@ def checkBooking(rentalSpace, datesToBeChecked):
         host = config.get('MySQL', 'hostname'),
         user = config.get('MySQL', 'user'),
         passwd = config.get('MySQL', 'password'),
-        db = config.get('MySQL', 'schema'))
+        db = config.get('MySQL', 'schema'),
+        charset = config.get('MySQL', 'charset'))
 
     print('connection is successful')
     cursor = conn.cursor()
@@ -92,7 +94,8 @@ def executeBooking(rentalSpace, bookingDates, usermail):
         host = config.get('MySQL', 'hostname'),
         user = config.get('MySQL', 'user'),
         passwd = config.get('MySQL', 'password'),
-        db = config.get('MySQL', 'schema'))
+        db = config.get('MySQL', 'schema'),
+        charset = config.get('MySQL', 'charset'))
 
     print('connection is successful')
     cursor = conn.cursor()
@@ -122,7 +125,8 @@ def cancelReservation(rentalSpace, usermail, bookingId):
         host = config.get('MySQL', 'hostname'),
         user = config.get('MySQL', 'user'),
         passwd = config.get('MySQL', 'password'),
-        db = config.get('MySQL', 'schema'))
+        db = config.get('MySQL', 'schema'),
+        charset = config.get('MySQL', 'charset'))
 
     print('connection is successful')
     cursor = conn.cursor()
