@@ -1,6 +1,7 @@
 import os
 import sys
 import configparser
+import json
 import random
 import string
 from datetime import datetime, date
@@ -20,7 +21,8 @@ else :
 
 
 # 今月(本日)以降３ヶ月の予約状況をファイルに書き込む処理
-def exportBookedDates():
+def exportBookedDates(rentalSpace):
+    preventSqlInjection(rentalSpace)
     # データベースへの接続とカーソルの生成
     conn = MySQLdb.connect(
         host = config.get('MySQL', 'hostname'),
@@ -33,10 +35,10 @@ def exportBookedDates():
     cursor = conn.cursor()
 
     try:
-        cursor.execute('select date from sapace_a')
+        cursor.execute('select date from %s' % rentalSpace)
         fetch = cursor.fetchall()
         if fetch:
-            with open('./static/csv/bookedDates.csv', 'w') as f:
+            with open('./static/csv/bookedDates_' + rentalSpace + '.csv', 'w') as f:
                 for date in fetch:
                     if date[0] >= datetime.now().date(): # 本日以降の日に限る
                         line = date[0].strftime('%Y,%m,%d') + '\n'
@@ -51,7 +53,8 @@ def exportBookedDates():
 
 
 # 予約を確認する処理
-def checkBooking(datesToBeChecked):
+def checkBooking(rentalSpace, datesToBeChecked):
+    preventSqlInjection(rentalSpace)
     # データベースへの接続とカーソルの生成
     conn = MySQLdb.connect(
         host = config.get('MySQL', 'hostname'),
@@ -65,7 +68,7 @@ def checkBooking(datesToBeChecked):
 
     try:
         for date in datesToBeChecked:
-            cursor.execute('select date from sapace_a where date=%s', (date,))
+            cursor.execute('select date from ' + rentalSpace + ' where date=%s', (date,))
             fetch = cursor.fetchone()
             if fetch:
                 if date == fetch[0]:
@@ -77,12 +80,13 @@ def checkBooking(datesToBeChecked):
     finally:
         cursor.close()
         conn.close()
-
+    print(result)
     return result
 
 
 # 予約を書き込む処理
-def executeBooking(bookingDates, usermail):
+def executeBooking(rentalSpace, bookingDates, usermail):
+    preventSqlInjection(rentalSpace)
     # データベースへの接続とカーソルの生成
     conn = MySQLdb.connect(
         host = config.get('MySQL', 'hostname'),
@@ -97,7 +101,7 @@ def executeBooking(bookingDates, usermail):
 
     try:
         for date in bookingDates:
-            cursor.execute('insert into sapace_a(date, days, usermail, bookingId) values(%s, %s, %s, %s)', (date, len(bookingDates), usermail, bookingId))
+            cursor.execute('insert into ' + rentalSpace + '(date, days, usermail, bookingId) values(%s, %s, %s, %s)', (date, len(bookingDates), usermail, bookingId))
 
         print('inserting reserving date is successful')
     except Exception as e :
@@ -111,7 +115,8 @@ def executeBooking(bookingDates, usermail):
 
 
 # 予約を取り消す処理
-def cancelReservation(bookingId):
+def cancelReservation(rentalSpace, usermail, bookingId):
+    preventSqlInjection(rentalSpace)
     # データベースへの接続とカーソルの生成
     conn = MySQLdb.connect(
         host = config.get('MySQL', 'hostname'),
@@ -121,19 +126,21 @@ def cancelReservation(bookingId):
 
     print('connection is successful')
     cursor = conn.cursor()
-    result = None
+    result = 0
 
     try:
-        cursor.execute('select usermail, date from sapace_a where bookingId=%s', (bookingId,))
+        cursor.execute('select usermail, date from ' + rentalSpace + ' where bookingId=%s', (bookingId,))
         fetch = cursor.fetchone()
         if fetch:
-            usermail = str(fetch[0])
-            date = fetch[1]
-            if date >= datetime.now().date(): # 本日以降の日に限る
-                cursor.execute('delete from sapace_a where bookingId=%s', (bookingId,))
-                result = usermail
-                print('canceling reserved date is successful')
-        else: # 予約番号がないとき
+            if usermail == str(fetch[0]):
+                date = fetch[1]
+                if date >= datetime.now().date(): # 本日以降の日に限る
+                    cursor.execute('delete from ' + rentalSpace + ' where bookingId=%s', (bookingId,))
+                    result = 1
+                    print('canceling reserved date is successful')
+            else:
+                print('usermail is incorrect')
+        else:
             print('this booking number is nothing')
 
     except Exception as e :
@@ -144,3 +151,9 @@ def cancelReservation(bookingId):
         conn.close()
 
     return result
+
+# SQLインジェクションチェック
+def preventSqlInjection(rentalSpace):
+    spaceList = json.loads(config.get("RentalSpace","spaceList"))
+    if rentalSpace not in spaceList:
+        raise Exception('SQLインジェクションの可能性あり')

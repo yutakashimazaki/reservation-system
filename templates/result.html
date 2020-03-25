@@ -1,10 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
+<!-- cssはcomfirm.cssを一部借用 -->
 <div class="confirm-back">
   {% if bookingId %}
     <h2>Completed</h2>
     <div class="confirm-wrap">
-      <div class="reserve-comp">
+      <div class="result-block">
         <i class="far fa-calendar-check"></i>
         <p>ご予約ありがとうございます。<br>
           確認メールを {{ session['usermail'] }} にお送りしますので、<br>
@@ -12,11 +13,11 @@
         <h3>予約番号 : {{ bookingId }}</h3>
         <span>※必ずお控えください。</span>
       </div>
-      <div class="reserve-contents">
+      <div class="reserve-contents reserve-comp">
         <h2>予約内容</h2>
         <dl>
           <dt>rental space</dt>
-          <dd>SPACE A</dd>
+          <dd>{{ spaceName }}</dd>
           <dt>rental date</dt>
           {% if session['datesToBeBooked'] | length == 1 %}
             <dd>{{ session['datesToBeBooked'][0] }}</dd>
@@ -31,10 +32,11 @@
         </dl>
       </div>
     </div>
+    <a href="/" class="back-to-top-btn reserve-comp-btn">TOP</a>
   {% else %}
     <h2>Failed</h2>
     <div class="confirm-wrap">
-      <div class="reserve-comp">
+      <div class="result-block">
         {% if message %}
           <p>{{ message }}</p>
           <p>もう一度やり直してください。</p>
@@ -42,9 +44,10 @@
           <p>ご予約できませんでした。<br>
             もう一度やり直してください。</p>
         {% endif %}
-        <span><a href="/details/space-a">SPACE A の予約はこちら</a></span>
+        <span><a href="{{ url_for('details', rentalSpace=session['rentalSpace']) }}">{{ spaceName }} の予約はこちら</a></span>
       </div>
     </div>
+    <a href="/" class="back-to-top-btn">TOP</a>
   {% endif %}
 </div>
 {% endblock %}

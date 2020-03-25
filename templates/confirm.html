@@ -7,7 +7,7 @@
       <img src="{{ url_for('static', filename='img/space_a.jpg') }}" />
       <dl>
         <dt>rental space</dt>
-        <dd>SPACE A</dd>
+        <dd>{{ spaceName }}</dd>
         <dt>rental date</dt>
         {% if session['datesToBeBooked'] | length == 1 %}
           <dd>{{ session['datesToBeBooked'][0] }}</dd>
@@ -21,8 +21,8 @@
             = {{ session['chargeAll'] }}円</dd>
         <p>※お支払いは現地で承ります。</p>
       </dl>
+      <button class="confirm-btn"><a href="/result">予約確定</a></button>
     </div>
-    <button class="confirm-btn"><a href="/result/space-a">予約確定</a></button>
   </div>
 </div>
 {% endblock %}

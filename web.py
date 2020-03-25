@@ -1,18 +1,24 @@
 import os
 import sys
 import configparser
+import json
 import subprocess
 import random
 import datetime
 from datetime import datetime, date, timedelta
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, abort, Markup
 
+from dto.spaceInfo import SpaceInfo
+from dto.spaceDetails import SpaceDetails
+from functions.rentalspace import getAllSpaceInfo, getSpaceDetails, getSpaceDescription, getSpaceEquipments, getSpaceBudgetPlan, getSpaceReview
 from functions.reservation import checkBooking, executeBooking, exportBookedDates, cancelReservation
 from functions.mail import sendMail
 from functions.authentication import loginUser, registerUser, tempRegisterUser, generateValidateCode
 
+# ======================================================
 # config.ini の読み込み
+# ======================================================
 if os.path.exists('./config.ini') :
     config = configparser.ConfigParser()
     try:
@@ -24,85 +30,172 @@ else :
     print('処理を中断します')
     sys.exit(1)
 
+# ======================================================
+# 関数（仮）
+# ======================================================
+def checkSpaceName(rentalSpace):
+    spaceList = json.loads(config.get("RentalSpace","spaceList"))
+    if rentalSpace not in spaceList:
+        abort(404)
 
+def getSpaceName(rentalSpace):
+    spaceName = 'SPACE A'
+    if session['rentalSpace'] == 'space_b':
+        spaceName = 'SPACE B'
+    elif session['rentalSpace'] == 'space_c':
+        spaceName = 'SPACE C'
+    elif session['rentalSpace'] == 'space_d':
+        spaceName = 'SPACE D'
+
+    return spaceName
+
+def generateFailedMsg(result):
+    reservedDates = []
+    for reservedDate in result:
+        reservedDate = reservedDate.strftime('%Y年%m月%d日')
+        reservedDates.append(reservedDate)
+
+    message = reservedDates[0]
+
+    if len(reservedDates) > 1:
+        for i in range(1, len(reservedDates)):
+            message += '、' + reservedDates[i]
+
+    message += 'はご予約できません。'
+
+    return message
+
+# ======================================================
+# ルーティング処理
+# ======================================================
 app = Flask(__name__)
 
 app.secret_key = config.get('WebServer', 'sessionKey')
 
-# ルーティング
+# HOME
 @app.route('/')
 def index():
-    return render_template('index.html')
+    allSpaceInfo = getAllSpaceInfo()
+    if not allSpaceInfo:
+        abort(500)
+    return render_template('index.html', allSpaceInfo=allSpaceInfo)
 
 # スペース詳細
-@app.route('/details/space-a')
-def space_a():
+@app.route('/<rentalSpace>/details')
+def details(rentalSpace):
+    checkSpaceName(rentalSpace)
     session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=int(config.get('WebServer', 'sessionTime'))) # セッションタイムアウトの時間指定
 
-    exportBookedDates()
-    return render_template('space-a.html')
+    exportBookedDates(rentalSpace)
+    # スペースの情報を取得
+    spaceDetails = getSpaceDetails(rentalSpace)
+    if not spaceDetails:
+        abort(500)
+    session['rentalSpace'] = rentalSpace
+    spaceName = getSpaceName(rentalSpace)
+    return render_template('space.html', spaceName=spaceName, description=spaceDetails.description, rentalSpace=rentalSpace, includingPage='details.html', spaceDetails=spaceDetails)
 
-# 予約
-@app.route('/reserve/space-a', methods=['GET', 'POST'])
-def reserve_a():
-  if request.method == 'POST':
+# 備品情報
+@app.route('/<rentalSpace>/equipments')
+def equipments(rentalSpace):
+    checkSpaceName(rentalSpace)
+    description = getSpaceDescription(rentalSpace)
+    if not description:
+        abort(500)
+    # スペースの備品情報を取得
+    spaceEquipments = getSpaceEquipments(rentalSpace)
+    if not spaceEquipments:
+        abort(500)
+    session['rentalSpace'] = rentalSpace
+    spaceName = getSpaceName(rentalSpace)
+    return render_template('space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='equipments.html', spaceEquipments=spaceEquipments)
 
-    # フォームからのデータを取得
-    startDate = request.form.get('date')
-    days = int(request.form.get('days'))
+# 料金プラン
+@app.route('/<rentalSpace>/budget-plan')
+def budgetPlan(rentalSpace):
+    checkSpaceName(rentalSpace)
+    description = getSpaceDescription(rentalSpace)
+    if not description:
+        abort(500)
+    # スペースの料金プランを取得
+    spaceBudgetPlan = getSpaceBudgetPlan(rentalSpace)
+    if not spaceBudgetPlan:
+        abort(500)
+    session['rentalSpace'] = rentalSpace
+    spaceName = getSpaceName(rentalSpace)
+    return render_template('space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='budgetPlan.html', spaceBudgetPlan=spaceBudgetPlan)
 
-    # dateオブジェクトに変換
-    datesToBeBooked = [startDate]
-    startDate = datetime.strptime(startDate, '%Y年%m月%d日').date()
-    datesToBeChecked = [startDate]
+# レビュー
+@app.route('/<rentalSpace>/review')
+def review(rentalSpace):
+    checkSpaceName(rentalSpace)
+    description = getSpaceDescription(rentalSpace)
+    if not description:
+        abort(500)
+    # スペースのレビューを取得
+    spaceReview = getSpaceReview(rentalSpace)
+    if not spaceReview:
+        abort(500)
+    session['rentalSpace'] = rentalSpace
+    spaceName = getSpaceName(rentalSpace)
+    return render_template('space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='review.html', spaceReview=spaceReview)
 
-    # レンタル期間が複数日の場合
-    if days != 1:
-        nextDay = startDate
-        for i in range(days - 1):
-            nextDay = nextDay + timedelta(days=1)
-            datesToBeChecked.append(nextDay) # dateオブジェクト
+# 予約内容のチェック
+@app.route('/reserve', methods=['GET', 'POST'])
+def reserve():
+    if 'rentalSpace' not in session:
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        # フォームからのデータを取得
+        startDate = request.form.get('date')
+        days = int(request.form.get('days'))
 
-            nextDayStr = nextDay.strftime('%Y年%m月%d日')
-            datesToBeBooked.append(nextDayStr) #Strオブジェクト
+        # dateオブジェクトに変換
+        datesToBeBooked = [startDate]
+        startDate = datetime.strptime(startDate, '%Y年%m月%d日').date()
+        datesToBeChecked = [startDate]
 
-    # 予約のチェック
-    result = checkBooking(datesToBeChecked)
-    if result: # 予約日がダメな場合
-        reservedDates = []
-        for reservedDate in result:
-            reservedDate = reservedDate.strftime('%Y年%m月%d日')
-            reservedDates.append(reservedDate)
+        # レンタル期間が複数日の場合
+        if days != 1:
+            nextDay = startDate
+            for i in range(days - 1):
+                nextDay = nextDay + timedelta(days=1)
+                datesToBeChecked.append(nextDay) # dateオブジェクト
 
-        message = reservedDates[0]
+                nextDayStr = nextDay.strftime('%Y年%m月%d日')
+                datesToBeBooked.append(nextDayStr) #Strオブジェクト
 
-        if len(reservedDates) > 1:
-            for i in range(1, len(reservedDates)):
-                message += '、' + reservedDates[i]
+        # 予約日がダメな場合
+        result = checkBooking(session['rentalSpace'], datesToBeChecked)
+        if result:
+            message = generateFailedMsg(result)
+            spaceName = getSpaceName(session['rentalSpace'])
+            return render_template('result.html', message=message, spaceName=spaceName)
 
-        message += 'はご予約できません。'
-        return render_template('result.html', message=message)
+        # 予約日が空いている場合
+        session['datesToBeBooked'] = datesToBeBooked
+        if 'usermail' in session: # ログイン済の場合
+            return redirect(url_for('confirm'))
+        else:
+            return redirect(url_for('login'))
 
-    # 予約日が空いている場合
-    session['datesToBeBooked'] = datesToBeBooked
-    # ログインチェック
-    if 'usermail' in session: # ログイン済の場合
-        return redirect(url_for('confirm_a'))
     else:
-        return redirect(url_for('login'))
+        # エラーなどでリダイレクトしたい場合
+        return redirect(url_for('details', rentalSpace=session['rentalSpace']))
 
-  else:
-    # エラーなどでリダイレクトしたい場合
-    return redirect(url_for('space_a'))
-
-# 予約確認
-@app.route('/confirm/space-a')
-def confirm_a():
-    if not ('usermail' in session):
+# 予約内容確認画面
+@app.route('/confirm')
+def confirm():
+    if 'rentalSpace' not in session:
+        return redirect(url_for('index'))
+    if 'usermail' not in session:
         return redirect(url_for('login'))
 
     if 'datesToBeBooked' in session:
+        # スペース名の取得
+        spaceName = getSpaceName(session['rentalSpace'])
+
         # 料金の計算
         charge = 25000
         chargeAll = charge * len(session['datesToBeBooked'])
@@ -111,70 +204,78 @@ def confirm_a():
         charge = '{:,}'.format(charge)
         chargeAll = '{:,}'.format(chargeAll)
         session['chargeAll'] = chargeAll
-        return render_template('confirm.html', charge=charge)
+        return render_template('confirm.html', spaceName=spaceName, charge=charge)
 
     # セッションタイムアウト等で「datesToBeBooked」の値が空のとき
-    return redirect(url_for('space_a'))
+    return redirect(url_for('details', rentalSpace=session['rentalSpace']))
 
-# 結果画面
-@app.route('/result/space-a')
-def result_a():
-    if not ('usermail' in session):
+# 予約処理
+@app.route('/result')
+def result():
+    if 'rentalSpace' not in session:
+        return redirect(url_for('index'))
+    if 'usermail' not in session:
         return redirect(url_for('login'))
 
     if 'datesToBeBooked' in session:
         bookingDates = []
+        rentalSpace = session['rentalSpace']
         datesToBeBooked = session['datesToBeBooked']
         usermail = session['usermail']
+        spaceName = getSpaceName(rentalSpace)
 
         for date in datesToBeBooked:
             bookingDate = datetime.strptime(date, '%Y年%m月%d日').date()
             bookingDates.append(bookingDate)
 
-        # 予約チェック
-        if checkBooking(bookingDates):
-            # 予約できないとき
-            return render_template('result.html')
+        # 予約日がダメな場合
+        result = checkBooking(rentalSpace, bookingDates)
+        if result:
+            message = generateFailedMsg(result)
+            return render_template('result.html', message=message, spaceName=spaceName)
 
-        # 予約の処理（DBに入れる） 戻り値：予約番号
-        bookingId = executeBooking(bookingDates, usermail)
+        # 予約の処理
+        bookingId = executeBooking(rentalSpace, bookingDates, usermail)
         # メールを送信
         subject = 'ご予約の確認'
         message = 'この度はご予約いただきまして誠にありがとうございます。\n'
         message += 'ご予約が完了いたしましたのでご案内申し上げます。\n\n'
         message += '<ご予約内容>\n'
         message += '■予約番号\n' + bookingId
-        message += '\n■スペース名\nspacea'
+        message += '\n■スペース名\n' + spaceName
         message += '\n■レンタル日\n' + (session['datesToBeBooked'][0] if len(session['datesToBeBooked']) == 1 else session['datesToBeBooked'][0] + '~' + session['datesToBeBooked'][-1])
-        message += '\n\n▼ご予約のキャンセルはこちら\nhttp://0.0.0.0/cancel/space-a\n\n'
+        message += '\n\n▼ご予約のキャンセルはこちら\nhttp://0.0.0.0/cancel/' + rentalSpace + '\n\n'
         message += '※このメールは自動配信されています。\n'
         message += 'このメールに返信してのお問い合わせなどにはお応えできません。\n'
 
         sendMail(session['usermail'], subject, message)
-        return render_template('result.html', bookingId=bookingId)
+        return render_template('result.html', bookingId=bookingId, spaceName=spaceName)
 
     # セッションタイムアウト等で「datesToBeBooked」の値が空のとき
-    return redirect(url_for('space_a'))
+    return redirect(url_for('details', rentalSpace=rentalSpace))
 
 # キャンセル画面
-@app.route('/cancel/space-a', methods=['GET', 'POST'])
-def cancel_a():
-    if not ('usermail' in session):
-        session['cancelRequest'] = True
+@app.route('/cancel/<rentalSpace>', methods=['GET', 'POST'])
+def cancel(rentalSpace):
+    checkSpaceName(rentalSpace)
+    if 'usermail' not in session:
+        session['spaceToBeCanceled'] = rentalSpace
         return redirect(url_for('login'))
 
     if request.method == 'POST':
         bookingId = request.form.get('bookingId')
-        usermail = cancelReservation(bookingId)
-        if usermail:
-            # メールを送信
-            subject = 'ご予約キャンセルの確認'
-            message = '予約番号: ' + bookingId + ' のご予約をキャンセルしました。'
-            sendMail(usermail, subject, message)
-            session.pop('cancelRequest', None)
-        return render_template('cancel_result.html', bookingId=bookingId, usermail=usermail)
+        usermail = session['usermail']
+        result = cancelReservation(rentalSpace, usermail, bookingId)
+        if result == 0:
+            return render_template('cancel_result.html', bookingId=bookingId, rentalSpace=rentalSpace)
+        # メールを送信
+        subject = 'ご予約キャンセルの確認'
+        message = '予約番号: ' + bookingId + ' のご予約をキャンセルしました。'
+        sendMail(usermail, subject, message)
+        session.pop('spaceToBeCanceled', None)
+        return render_template('cancel_result.html', bookingId=bookingId, usermail=usermail, rentalSpace=rentalSpace)
     else:
-        return render_template('cancel.html')
+        return render_template('cancel.html', rentalSpace=rentalSpace)
 
 # ログイン
 @app.route('/login', methods=['GET', 'POST'])
@@ -194,15 +295,16 @@ def login():
 
         session['usermail'] = mail
 
-        if 'datesToBeBooked' in session:
-            return redirect(url_for('confirm_a'))
-        elif 'cancelRequest' in session:
-            return redirect(url_for('cancel_a'))
-        elif 'accountRequest' in session:
+        if 'accountRequest' in session:
             return redirect(url_for('account'))
+        elif 'spaceToBeCanceled' in session:
+            return redirect(url_for('cancel', rentalSpace=session['spaceToBeCanceled']))
+        elif 'datesToBeBooked' in session:
+            return redirect(url_for('confirm'))
+        elif 'rentalSpace' in session:
+            return redirect(url_for('details', rentalSpace=session['rentalSpace']))
 
-        # 予約日がセッションになければスペース詳細ページへ遷移
-        return redirect(url_for('space_a'))
+        return redirect(url_for('index'))
 
     else:
       return render_template('login.html')
@@ -271,6 +373,27 @@ def account():
 
     session.pop('accountRequest', None)
     return render_template('account.html')
+
+# ======================================================
+# エラー表示
+# ======================================================
+# 404ページ
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page-not-found.html'), 404
+
+# 500ページ
+@app.errorhandler(500)
+def internal_server_error(error):
+    return render_template('internal_server_error.html'), 500
+
+# ======================================================
+# フィルター
+# ======================================================
+# 改行コード
+@app.template_filter('linebreaker')
+def linebreaker(line):
+    return Markup(line.replace('\n', '<br>'))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
