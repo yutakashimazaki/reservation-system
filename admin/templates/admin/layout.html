@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/ fb# website: http://ogp.me/ns/ website#">
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta property="og:url" content="http://127.0.0.1/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Reservation System" />
+  <meta property="og:description" content=" ページのディスクリプション" />
+  <meta property="og:site_name" content="" />
+  <meta property="og:image" content="" />
+  <!-- <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/style.css') }}"> -->
+  <title>Admin - Reservation System</title>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+        <a class="logo" href="/admin"　target="_blank"><img src="{{ url_for('customer.static', filename='img/icon_logo.png') }}" /></a>
+
+        <!--<div class="menue">
+            <a href=""　target="_blank">Menu1</a>
+            <a href=""　target="_blank">Menu2</a>
+            <a href=""　target="_blank">Menu3</a>
+        </div>-->
+    </div>
+  </div>
+  <div class="main">
+{% block content %}
+<!-- ここに個別部分が挿入される -->
+{% endblock %}
+  </div>
+  <div class="footer">
+  </div>
+</body>
+</html>

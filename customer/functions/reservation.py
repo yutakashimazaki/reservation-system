@@ -39,7 +39,7 @@ def exportBookedDates(rentalSpace):
         cursor.execute('select date from %s' % rentalSpace)
         fetch = cursor.fetchall()
         if fetch:
-            with open('./static/csv/bookedDates_' + rentalSpace + '.csv', 'w') as f:
+            with open('./customer/static/csv/bookedDates_' + rentalSpace + '.csv', 'w') as f:
                 for date in fetch:
                     if date[0] >= datetime.now().date(): # 本日以降の日に限る
                         line = date[0].strftime('%Y,%m,%d') + '\n'

@@ -117,7 +117,7 @@ function getBookedDates(year, month){
     let pageUrl = location.href.split('/');
     let spaceName = pageUrl[pageUrl.length - 2];
     let req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
-    req.open("get", 'http://0.0.0.0/static/csv/bookedDates_' + spaceName + '.csv', false); // アクセスするファイルを指定(同期処理)
+    req.open("get", 'http://0.0.0.0/static_c/csv/bookedDates_' + spaceName + '.csv', false); // アクセスするファイルを指定(同期処理)
     req.send(null); // HTTPリクエストの発行
 
     // トランザクション完了後，ステータスコードが200の場合

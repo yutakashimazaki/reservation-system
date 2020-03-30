@@ -2,19 +2,18 @@ import os
 import sys
 import configparser
 import json
-import subprocess
 import random
 import datetime
 from datetime import datetime, date, timedelta
 
-from flask import Flask, render_template, request, redirect, url_for, session, abort, Markup
+from flask import Blueprint, render_template, request, redirect, url_for, session, abort
 
-from dto.spaceInfo import SpaceInfo
-from dto.spaceDetails import SpaceDetails
-from functions.rentalspace import getAllSpaceInfo, getSpaceDetails, getSpaceDescription, getSpaceEquipments, getSpaceBudgetPlan, getSpaceReview
-from functions.reservation import checkBooking, executeBooking, exportBookedDates, cancelReservation
-from functions.mail import sendMail
-from functions.authentication import loginUser, registerUser, tempRegisterUser, generateValidateCode
+from customer.dto.spaceInfo import SpaceInfo
+from customer.dto.spaceDetails import SpaceDetails
+from customer.functions.rentalspace import getAllSpaceInfo, getSpaceDetails, getSpaceDescription, getSpaceEquipments, getSpaceBudgetPlan, getSpaceReview
+from customer.functions.reservation import checkBooking, executeBooking, exportBookedDates, cancelReservation
+from customer.functions.mail import sendMail
+from customer.functions.authentication import loginUser, registerUser, tempRegisterUser, generateValidateCode
 
 # ======================================================
 # config.ini の読み込み
@@ -68,24 +67,24 @@ def generateFailedMsg(result):
 # ======================================================
 # ルーティング処理
 # ======================================================
-app = Flask(__name__)
+customer = Blueprint('customer', __name__, template_folder='templates', static_folder='./static', static_url_path='/static_c')
 
-app.secret_key = config.get('WebServer', 'sessionKey')
+# customer.secret_key = config.get('WebServer', 'sessionKey')
 
 # HOME
-@app.route('/')
+@customer.route('/')
 def index():
     allSpaceInfo = getAllSpaceInfo()
     if not allSpaceInfo:
         abort(500)
-    return render_template('index.html', allSpaceInfo=allSpaceInfo)
+    return render_template('customer/index.html', allSpaceInfo=allSpaceInfo)
 
 # スペース詳細
-@app.route('/<rentalSpace>/details')
+@customer.route('/<rentalSpace>/details')
 def details(rentalSpace):
     checkSpaceName(rentalSpace)
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=int(config.get('WebServer', 'sessionTime'))) # セッションタイムアウトの時間指定
+    customer.permanent_session_lifetime = timedelta(minutes=int(config.get('WebServer', 'sessionTime'))) # セッションタイムアウトの時間指定
 
     exportBookedDates(rentalSpace)
     # スペースの情報を取得
@@ -94,10 +93,10 @@ def details(rentalSpace):
         abort(500)
     session['rentalSpace'] = rentalSpace
     spaceName = getSpaceName(rentalSpace)
-    return render_template('space.html', spaceName=spaceName, description=spaceDetails.description, rentalSpace=rentalSpace, includingPage='details.html', spaceDetails=spaceDetails)
+    return render_template('customer/space.html', spaceName=spaceName, description=spaceDetails.description, rentalSpace=rentalSpace, includingPage='customer/details.html', spaceDetails=spaceDetails)
 
 # 備品情報
-@app.route('/<rentalSpace>/equipments')
+@customer.route('/<rentalSpace>/equipments')
 def equipments(rentalSpace):
     checkSpaceName(rentalSpace)
     description = getSpaceDescription(rentalSpace)
@@ -109,10 +108,10 @@ def equipments(rentalSpace):
         abort(500)
     session['rentalSpace'] = rentalSpace
     spaceName = getSpaceName(rentalSpace)
-    return render_template('space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='equipments.html', spaceEquipments=spaceEquipments)
+    return render_template('customer/space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='customer/equipments.html', spaceEquipments=spaceEquipments)
 
 # 料金プラン
-@app.route('/<rentalSpace>/budget-plan')
+@customer.route('/<rentalSpace>/budget-plan')
 def budgetPlan(rentalSpace):
     checkSpaceName(rentalSpace)
     description = getSpaceDescription(rentalSpace)
@@ -124,10 +123,10 @@ def budgetPlan(rentalSpace):
         abort(500)
     session['rentalSpace'] = rentalSpace
     spaceName = getSpaceName(rentalSpace)
-    return render_template('space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='budgetPlan.html', spaceBudgetPlan=spaceBudgetPlan)
+    return render_template('customer/space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='customer/budgetPlan.html', spaceBudgetPlan=spaceBudgetPlan)
 
 # レビュー
-@app.route('/<rentalSpace>/review')
+@customer.route('/<rentalSpace>/review')
 def review(rentalSpace):
     checkSpaceName(rentalSpace)
     description = getSpaceDescription(rentalSpace)
@@ -139,13 +138,13 @@ def review(rentalSpace):
         abort(500)
     session['rentalSpace'] = rentalSpace
     spaceName = getSpaceName(rentalSpace)
-    return render_template('space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='review.html', spaceReview=spaceReview)
+    return render_template('customer/space.html', spaceName=spaceName, description=description, rentalSpace=rentalSpace, includingPage='customer/review.html', spaceReview=spaceReview)
 
 # 予約内容のチェック
-@app.route('/reserve', methods=['GET', 'POST'])
+@customer.route('/reserve', methods=['GET', 'POST'])
 def reserve():
     if 'rentalSpace' not in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('customer.index'))
     if request.method == 'POST':
         # フォームからのデータを取得
         startDate = request.form.get('date')
@@ -171,26 +170,26 @@ def reserve():
         if result:
             message = generateFailedMsg(result)
             spaceName = getSpaceName(session['rentalSpace'])
-            return render_template('result.html', message=message, spaceName=spaceName)
+            return render_template('customer/result.html', message=message, spaceName=spaceName)
 
         # 予約日が空いている場合
         session['datesToBeBooked'] = datesToBeBooked
         if 'usermail' in session: # ログイン済の場合
-            return redirect(url_for('confirm'))
+            return redirect(url_for('customer.confirm'))
         else:
-            return redirect(url_for('login'))
+            return redirect(url_for('customer.login'))
 
     else:
         # エラーなどでリダイレクトしたい場合
-        return redirect(url_for('details', rentalSpace=session['rentalSpace']))
+        return redirect(url_for('customer.details', rentalSpace=session['rentalSpace']))
 
 # 予約内容確認画面
-@app.route('/confirm')
+@customer.route('/confirm')
 def confirm():
     if 'rentalSpace' not in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('customer.index'))
     if 'usermail' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('customer.login'))
 
     if 'datesToBeBooked' in session:
         # スペース名の取得
@@ -204,18 +203,18 @@ def confirm():
         charge = '{:,}'.format(charge)
         chargeAll = '{:,}'.format(chargeAll)
         session['chargeAll'] = chargeAll
-        return render_template('confirm.html', spaceName=spaceName, charge=charge)
+        return render_template('customer/confirm.html', spaceName=spaceName, charge=charge)
 
     # セッションタイムアウト等で「datesToBeBooked」の値が空のとき
-    return redirect(url_for('details', rentalSpace=session['rentalSpace']))
+    return redirect(url_for('customer.details', rentalSpace=session['rentalSpace']))
 
 # 予約処理
-@app.route('/result')
+@customer.route('/result')
 def result():
     if 'rentalSpace' not in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('customer.index'))
     if 'usermail' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('customer.login'))
 
     if 'datesToBeBooked' in session:
         bookingDates = []
@@ -232,7 +231,7 @@ def result():
         result = checkBooking(rentalSpace, bookingDates)
         if result:
             message = generateFailedMsg(result)
-            return render_template('result.html', message=message, spaceName=spaceName)
+            return render_template('customer/result.html', message=message, spaceName=spaceName)
 
         # 予約の処理
         bookingId = executeBooking(rentalSpace, bookingDates, usermail)
@@ -249,36 +248,36 @@ def result():
         message += 'このメールに返信してのお問い合わせなどにはお応えできません。\n'
 
         sendMail(session['usermail'], subject, message)
-        return render_template('result.html', bookingId=bookingId, spaceName=spaceName)
+        return render_template('customer/result.html', bookingId=bookingId, spaceName=spaceName)
 
     # セッションタイムアウト等で「datesToBeBooked」の値が空のとき
-    return redirect(url_for('details', rentalSpace=rentalSpace))
+    return redirect(url_for('customer.details', rentalSpace=rentalSpace))
 
 # キャンセル画面
-@app.route('/cancel/<rentalSpace>', methods=['GET', 'POST'])
+@customer.route('/cancel/<rentalSpace>', methods=['GET', 'POST'])
 def cancel(rentalSpace):
     checkSpaceName(rentalSpace)
     if 'usermail' not in session:
         session['spaceToBeCanceled'] = rentalSpace
-        return redirect(url_for('login'))
+        return redirect(url_for('customer.login'))
 
     if request.method == 'POST':
         bookingId = request.form.get('bookingId')
         usermail = session['usermail']
         result = cancelReservation(rentalSpace, usermail, bookingId)
         if result == 0:
-            return render_template('cancel_result.html', bookingId=bookingId, rentalSpace=rentalSpace)
+            return render_template('customer/cancel_result.html', bookingId=bookingId, rentalSpace=rentalSpace)
         # メールを送信
         subject = 'ご予約キャンセルの確認'
         message = '予約番号: ' + bookingId + ' のご予約をキャンセルしました。'
         sendMail(usermail, subject, message)
         session.pop('spaceToBeCanceled', None)
-        return render_template('cancel_result.html', bookingId=bookingId, usermail=usermail, rentalSpace=rentalSpace)
+        return render_template('customer/cancel_result.html', bookingId=bookingId, usermail=usermail, rentalSpace=rentalSpace)
     else:
-        return render_template('cancel.html', rentalSpace=rentalSpace)
+        return render_template('customer/cancel.html', rentalSpace=rentalSpace)
 
 # ログイン
-@app.route('/login', methods=['GET', 'POST'])
+@customer.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         mail = request.form.get('usermail')
@@ -287,36 +286,36 @@ def login():
 
         # ログイン失敗
         if result == 0:
-            return render_template('login.html', errMsg='このメールアドレスは登録されていません')
+            return render_template('customer/login.html', errMsg='このメールアドレスは登録されていません')
         elif result == -1:
-            return render_template('login.html', errMsg='パスワードが間違っています')
+            return render_template('customer/login.html', errMsg='パスワードが間違っています')
         elif result == -2:
-            return render_template('login.html', errMsg='アカウントのメール認証がされていません')
+            return render_template('customer/login.html', errMsg='アカウントのメール認証がされていません')
 
         session['usermail'] = mail
 
         if 'accountRequest' in session:
-            return redirect(url_for('account'))
+            return redirect(url_for('customer.account'))
         elif 'spaceToBeCanceled' in session:
-            return redirect(url_for('cancel', rentalSpace=session['spaceToBeCanceled']))
+            return redirect(url_for('customer.cancel', rentalSpace=session['spaceToBeCanceled']))
         elif 'datesToBeBooked' in session:
-            return redirect(url_for('confirm'))
+            return redirect(url_for('customer.confirm'))
         elif 'rentalSpace' in session:
-            return redirect(url_for('details', rentalSpace=session['rentalSpace']))
+            return redirect(url_for('customer.details', rentalSpace=session['rentalSpace']))
 
-        return redirect(url_for('index'))
+        return redirect(url_for('customer.index'))
 
     else:
-      return render_template('login.html')
+      return render_template('customer/login.html')
 
 # ログアウト
-@app.route('/logout')
+@customer.route('/logout')
 def logout():
     session.pop('usermail', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('customer.index'))
 
 # 会員登録
-@app.route('/register', methods=['GET', 'POST'])
+@customer.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         mail = request.form.get('usermail')
@@ -329,7 +328,7 @@ def register():
 
         # エラーの場合
         if tempRegisterUser(mail, password, phone, firstName, lastName, company, tempPass) == 0:
-            return render_template('register.html', errMsg='このメールアドレスは既に登録されています')
+            return render_template('customer/register.html', errMsg='このメールアドレスは既に登録されています')
 
         # メールを送信
         subject = '会員登録'
@@ -337,13 +336,13 @@ def register():
         message += '認証コードは ' + tempPass + ' です。\n\n'
         message += '下記URLから認証ページに移動できます。\nhttp://0.0.0.0/verify'
         sendMail(mail, subject, message)
-        return redirect(url_for('verify'))
+        return redirect(url_for('customer.verify'))
 
     else:
-      return render_template('register.html')
+      return render_template('customer/register.html')
 
 # 会員登録
-@app.route('/verify', methods=['GET', 'POST'])
+@customer.route('/verify', methods=['GET', 'POST'])
 def verify():
     if request.method == 'POST':
         mail = request.form.get('usermail')
@@ -352,48 +351,24 @@ def verify():
 
         # エラーの場合
         if result == 0:
-            return render_template('verify.html', errMsg='メールアドレスが間違っています')
+            return render_template('customer/verify.html', errMsg='メールアドレスが間違っています')
         elif result == -1:
-            return render_template('verify.html', errMsg='認証コードが違います')
+            return render_template('customer/verify.html', errMsg='認証コードが違います')
 
         # メールを送信
         subject = '会員登録完了'
         message = '登録が完了しました。\n'
         sendMail(mail, subject, message)
-        return redirect(url_for('login'))
+        return redirect(url_for('customer.login'))
     else:
-      return render_template('verify.html')
+      return render_template('customer/verify.html')
 
 # マイページ
-@app.route('/account')
+@customer.route('/account')
 def account():
     if not ('usermail' in session):
         session['accountRequest'] = True
-        return redirect(url_for('login'))
+        return redirect(url_for('customer.login'))
 
     session.pop('accountRequest', None)
-    return render_template('account.html')
-
-# ======================================================
-# エラー表示
-# ======================================================
-# 404ページ
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('page-not-found.html'), 404
-
-# 500ページ
-@app.errorhandler(500)
-def internal_server_error(error):
-    return render_template('internal_server_error.html'), 500
-
-# ======================================================
-# フィルター
-# ======================================================
-# 改行コード
-@app.template_filter('linebreaker')
-def linebreaker(line):
-    return Markup(line.replace('\n', '<br>'))
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    return render_template('customer/account.html')

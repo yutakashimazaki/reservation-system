@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "customer/layout.html" %}
 {% block content %}
 <!-- cssはcomfirm.cssを一部借用 -->
 <div class="confirm-back">
@@ -44,7 +44,7 @@
           <p>ご予約できませんでした。<br>
             もう一度やり直してください。</p>
         {% endif %}
-        <span><a href="{{ url_for('details', rentalSpace=session['rentalSpace']) }}">{{ spaceName }} の予約はこちら</a></span>
+        <span><a href="{{ url_for('customer.details', rentalSpace=session['rentalSpace']) }}">{{ spaceName }} の予約はこちら</a></span>
       </div>
     </div>
     <a href="/" class="back-to-top-btn">TOP</a>

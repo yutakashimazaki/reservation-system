@@ -6,8 +6,8 @@ import string
 from datetime import datetime, date
 import MySQLdb
 
-from dto.spaceInfo import SpaceInfo
-from dto.spaceDetails import SpaceDetails
+from customer.dto.spaceInfo import SpaceInfo
+from customer.dto.spaceDetails import SpaceDetails
 
 # config.ini の読み込み
 if os.path.exists('./config.ini') :

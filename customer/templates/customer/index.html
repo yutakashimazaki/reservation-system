@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "customer/layout.html" %}
 {% block content %}
 <div class="contents-header">
   <h1>Rental Space List</h1>
@@ -7,7 +7,7 @@
   <div class="list-inner">
     <div class="space-block">
       <div class="space-img">
-        <a href="/space_a/details"><img src="{{ url_for('static', filename='img/space_a.jpg') }}" /></a>
+        <a href="/space_a/details"><img src="{{ url_for('customer.static', filename='img/space_a.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
@@ -25,7 +25,7 @@
     </div>
     <div class="space-block">
       <div class="space-img">
-        <a href="/space_b/details"><img src="{{ url_for('static', filename='img/space_b.jpg') }}" /></a>
+        <a href="/space_b/details"><img src="{{ url_for('customer.static', filename='img/space_b.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
@@ -43,7 +43,7 @@
     </div>
     <div class="space-block">
       <div class="space-img">
-        <a href="/space_c/details"><img src="{{ url_for('static', filename='img/space_c.jpg') }}" /></a>
+        <a href="/space_c/details"><img src="{{ url_for('customer.static', filename='img/space_c.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
@@ -61,7 +61,7 @@
     </div>
     <div class="space-block">
       <div class="space-img">
-        <a href="/space_d/details"><img src="{{ url_for('static', filename='img/space_d.jpg') }}" /></a>
+        <a href="/space_d/details"><img src="{{ url_for('customer.static', filename='img/space_d.jpg') }}" /></a>
       </div>
       <div class="space-txt">
         <div class="inner">
