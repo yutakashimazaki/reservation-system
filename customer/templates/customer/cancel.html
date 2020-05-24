@@ -1,0 +1,15 @@
+{% extends "customer/layout.html" %}
+{% block content %}
+<!-- cssはregister.cssを借用 -->
+<div class="register-back">
+  <h2>Cancel Reservation</h2>
+  <div class="register-wrap">
+    <form action="/cancel/{{ rentalSpace }}" method="post" class="register-form">
+      <div class="register-input">
+        <input type="text" name="bookingId" required="required" aria-label="予約番号">
+        <label>予約番号</label>
+      <button type="submit" >cancel</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

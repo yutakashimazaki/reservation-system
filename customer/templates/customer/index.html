@@ -1,0 +1,82 @@
+{% extends "customer/layout.html" %}
+{% block content %}
+<div class="contents-header">
+  <h1>Rental Space List</h1>
+</div>
+<div class="space-list">
+  <div class="list-inner">
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/space_a/details"><img src="{{ url_for('customer.static', filename='img/space_a.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/space_a/details">{{ allSpaceInfo['space_a'].name }}</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>{{ allSpaceInfo['space_a'].address }}</dd>
+            <dt>tell</dt>
+            <dd>{{ allSpaceInfo['space_a'].tell }}</dd>
+            <dt>hour</dt>
+            <dd>{{ allSpaceInfo['space_a'].startTime }}~{{ allSpaceInfo['space_a'].endTime }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/space_b/details"><img src="{{ url_for('customer.static', filename='img/space_b.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/space_b/details">{{ allSpaceInfo['space_b'].name }}</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>{{ allSpaceInfo['space_b'].address }}</dd>
+            <dt>tell</dt>
+            <dd>{{ allSpaceInfo['space_b'].tell }}</dd>
+            <dt>hour</dt>
+            <dd>{{ allSpaceInfo['space_b'].startTime }}~{{ allSpaceInfo['space_b'].endTime }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/space_c/details"><img src="{{ url_for('customer.static', filename='img/space_c.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/space_c/details">{{ allSpaceInfo['space_c'].name }}</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>{{ allSpaceInfo['space_c'].address }}</dd>
+            <dt>tell</dt>
+            <dd>{{ allSpaceInfo['space_c'].tell }}</dd>
+            <dt>hour</dt>
+            <dd>{{ allSpaceInfo['space_c'].startTime }}~{{ allSpaceInfo['space_c'].endTime }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="space-block">
+      <div class="space-img">
+        <a href="/space_d/details"><img src="{{ url_for('customer.static', filename='img/space_d.jpg') }}" /></a>
+      </div>
+      <div class="space-txt">
+        <div class="inner">
+          <h3><a href="/space_d/details">{{ allSpaceInfo['space_d'].name }}</a></h3>
+          <dl>
+            <dt>address</dt>
+            <dd>{{ allSpaceInfo['space_d'].address }}</dd>
+            <dt>tell</dt>
+            <dd>{{ allSpaceInfo['space_d'].tell }}</dd>
+            <dt>hour</dt>
+            <dd>{{ allSpaceInfo['space_d'].startTime }}~{{ allSpaceInfo['space_d'].endTime }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

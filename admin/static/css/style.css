@@ -1,0 +1,176 @@
+@font-face {
+font-family: mgen-plus;
+src: url(../fonts/mgenplus.ttf);
+font-weight: normal;
+}
+
+body {
+  margin: 0;
+  font-weight: 400;
+  font-family: "mgen-plus", Arial, sans-serif;
+  color: #3a3937;
+}
+
+.no-active {
+  display: none;
+}
+
+/*===================== 左のメニュー部分 ====================*/
+.left-panel {
+  float: left;
+  width: 20%;
+  min-height: 100vh;
+  background: linear-gradient(to top, #383d44, #272c33);
+  color: #eee;
+}
+.left-panel a {
+  color: #ddd;
+  text-decoration: none;
+}
+.left-panel a:hover {
+  color: #fff;
+}
+
+.nav-inner {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.nav-logo {
+  display: block;
+  padding: 16px 0;
+  font-size: 24px;
+  font-weight: 500;
+  font-family: sans-serif;
+  text-shadow: 1px 1px 1px 1px #000;
+  letter-spacing: 0.1rem;
+  text-align: center;
+  border-bottom: solid 0.1px #888;
+}
+
+.nav-menu {
+  padding: 0;
+}
+.nav-menu li {
+  display: block;
+  width: 100%;
+  height: 60px;
+  box-sizing: border-box;
+  border-bottom: solid 0.1px #777;
+  list-style: none;
+}
+.nav-menu li a {
+  position: relative;
+  display: block;
+  margin-left: 20px;
+  width: calc(100% - 20px);
+  height: 100%;
+  line-height: 60px;
+}
+.nav-menu i.icon {
+  display: inline-block;
+  margin-right: 30px;
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+.nav-menu i.arrow {
+  position: absolute;
+  display: inline-block;
+  right: 15px;
+  bottom: 22px;
+  width: 12px;
+  height: 12px;
+  font-size: 12px;
+}
+
+.sub-menu {
+  padding: 10px;
+  /* border-bottom: solid 0.1px #777; */
+}
+.sub-menu a {
+  display: block;
+  margin-left: 40px;
+  padding: 5px;
+  width: calc(100% - 40px);
+  font-size: 14px;
+}
+
+/*===================== 右のメイン部分 ====================*/
+.right-panel {
+  float: left;
+  width: 80%;
+  min-height: 100vh;
+  background-color: #eee;
+}
+
+.header {
+  height: 60px;
+  background-color: #fff;
+  box-shadow: 2px 0px 3px 1px #aaa;
+}
+.header-left {
+  display: block;
+  float: left;
+  margin: auto 0 auto 80px;
+  height: 100%;
+  width: calc(50% - 80px);
+}
+.header-left i {
+  display: inline-block;
+  font-size: 18px;
+  color: #000;
+  line-height: 60px;
+  position: relative;
+  cursor: pointer;
+  filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.6));
+}
+.header-right {
+  display: block;
+  float: left;
+  margin: auto 20px auto 0;
+  height: 100%;
+  width: calc(50% - 20px);
+  text-align: right;
+}
+.header-right i {
+  display: inline-block;
+  font-size: 35px;
+  color: #aaa;
+  line-height: 60px;
+  position: relative;
+  cursor: pointer;
+}
+#admin-menu {
+  position:absolute;
+  bottom: -35px;
+  right: -10px;
+  width: 100px;
+  height: 40px;
+  line-height: 40px;
+  background-color: #fff;
+  border: solid 0.5px #ddd;
+  box-shadow: 1px 1px 3px 1px #ddd;
+}
+#admin-menu a {
+  display: block;
+  text-decoration: none;
+  color: #222;
+  font-size: 14px;
+  text-align: center;
+}
+
+.navigation {
+  margin: 15px 0;
+  padding: 10px;
+  width: 100%;
+  background-color: #fff;
+  color: #000;
+  text-indent: 30px;
+}
+
+/*===================== 右のメイン部分全体 ====================*/
+.main-wrap {
+  margin: 20px auto;
+  width: 95%;
+}

@@ -1,0 +1,26 @@
+{% extends "customer/layout.html" %}
+{% block content %}
+<!-- cssはcomfirm.cssとresult.cssを借用 -->
+<div class="confirm-back">
+  {% if usermail %}
+    <h2>Completed</h2>
+    <div class="confirm-wrap">
+      <div class="result-block">
+        <p>予約番号: {{ bookingId }} のご予約をキャンセルしました。</p>
+        <p>確認メールを {{ usermail }} にお送りしますので、<br>
+        ご確認ください。</p>
+      </div>
+    </div>
+  {% else %}
+    <h2>Failed</h2>
+    <div class="confirm-wrap">
+      <div class="result-block">
+        <p>予約番号: {{ bookingId }} のご予約はございません。<br><br>
+          ご予約の番号を再度ご確認ください。</p>
+        <span><a href="/cancel/{{ rentalSpace }}">もう一度試す</a></span>
+      </div>
+    </div>
+  {% endif %}
+    <a href="/" class="back-to-top-btn">TOP</a>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/ fb# website: http://ogp.me/ns/ website#">
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta property="og:url" content="http://127.0.0.1/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Reservation System Admin" />
+  <meta property="og:description" content=" ページのディスクリプション" />
+  <meta property="og:site_name" content="" />
+  <meta property="og:image" content="" />
+  <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/login.css') }}">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  <title>Login - Reservation System Admin</title>
+</head>
+<body>
+  <div class="login-back">
+    <h2>Admin Login</h2>
+    <div class="login-wrap">
+      <form action="/admin/login" method="post" class="login-form">
+        {% if errMsg %}
+          <p class="err-msg">{{ errMsg }}</p>
+        {% endif %}
+        <div class="login-input">
+          <input type="text" name="adminName" required="required" aria-label="admin name">
+          <label>admin name</label>
+        </div>
+        <div class="login-input">
+          <input type="password" name="adminPass" required="required" aria-label="password">
+          <label>password</label>
+        </div>
+        <button type="submit" >login</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

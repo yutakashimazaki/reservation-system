@@ -1,0 +1,201 @@
+@font-face {
+font-family: mgen-plus;
+src: url(../fonts/mgenplus.ttf);
+font-weight: normal;
+}
+
+body {
+  margin: 0;
+  font-weight: 400;
+  font-family: "mgen-plus", Arial, sans-serif;
+  color: #3a3937;
+}
+
+/*===================== ヘッダー部分 ====================*/
+.header {
+  position: relative;
+  background: #fff;
+  z-index: 9999;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  transition: top 0.6s;
+  min-height: 100px;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto;
+  padding: 20px 0;
+  height: 60px;
+  width: 60px;
+  /*position: absolute;
+  top: 15px;
+  left: 20px;*/
+  cursor: pointer;
+}
+.logo img{
+  opacity: 0.85;
+  height: 100%;
+}
+
+.account {
+  position: absolute;
+  top: 37px;
+  right: 150px;
+  font-size: 22px;
+  color: #3a3937;
+  text-decoration: none;
+}
+/*
+.menue {
+    display: block;
+    margin: 0 auto;
+    width: 320px;
+}
+.menue a {
+    display: inline-block;
+    margin: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #444;
+}*/
+
+/*===================== コンテンツタイトル部分 =====================*/
+.contents-header {
+  z-index: 1;
+  background: linear-gradient(to bottom, #eee, rgba(255, 255, 255, 0));
+}
+.contents-header h1 {
+  margin: 0 auto;
+  padding-top: 60px;
+  height: 100px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 100;
+  letter-spacing: 2px;
+}
+/*===================== コンテンツ全体 =====================*/
+.space-list {
+  display: flex;
+  position: relative;
+  padding: 80px 0;
+  width: 100%;
+  z-index: 2;
+  background: linear-gradient(to top, #f7f7f7, #fff);
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: left;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.04);
+  transition: 1s;
+
+}
+.list-inner {
+  margin: 0 auto;
+  width: 1020px;
+  box-sizing: content-box;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/*===================== コンテンツ部分 =====================*/
+.space-block {
+  text-align: left;
+  transition: .8s;
+  opacity: 1.0;
+  transform: translate(0, 0) !important;
+  cursor: pointer;
+  width: calc(50% - 10px);
+  min-height: 180px;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  margin-bottom: 25px;
+}
+
+.space-img {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 240px;
+  overflow: hidden;
+}
+.space-img a {
+  -webkit-appearance: none;
+  text-decoration: none;
+  display: block;
+}
+.space-img a img{
+  max-width: 100%;
+  height: auto;
+  border-radius: 3px;
+}
+
+
+.space-txt {
+  position: relative;
+  margin-top: 20px;
+  width: calc(100% - 220px);
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.07);
+  z-index: 3;
+}
+.inner {
+  display: flex;
+  padding: 20px;
+  text-align: left;
+  cursor: pointer;
+  flex-wrap: wrap;
+}
+
+.inner h3{
+  margin: 0.4em 0 0.4em;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.6em;
+  font-weight: 400;
+}
+.inner a {
+  color: #3a3937;
+  text-decoration: none;
+}
+
+.inner dl {
+  width: 100%;
+  margin: 0;
+  border-top: 1px dotted #d9d7d2;
+  padding-top: 3px;
+}
+.inner dt {
+  display: block;
+  font-size: 10px;
+  font-weight: 300;
+  color: #b3b2b1;
+}
+.inner dd {
+  display: block;
+  font-size: 12px;
+  margin-inline-start: 5px;
+}
+/*===================== フッター部分 =====================*/
+.footer {
+  margin: 0;
+  background: #4d4b49;
+}
+/*------------- SNS部分 ------------*/
+.sns-logo {
+  margin: 0 auto;
+  width: 350px;
+  height: 100px;
+}
+.btn-sns {
+  display: inline-block;
+  margin: 24px 40px;
+  float: left;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: #fafafa;
+  font-size: 35px;
+}

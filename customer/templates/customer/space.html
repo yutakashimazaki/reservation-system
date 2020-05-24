@@ -1,0 +1,28 @@
+{% extends "customer/layout.html" %}
+{% block content %}
+<h1 class="space-title">{{ spaceName }}</h1>
+<div class="img-slider">
+  <img src="{{ url_for('customer.static', filename='img/space_a.jpg') }}" alt="">
+  <img src="{{ url_for('customer.static', filename='img/space_b.jpg') }}" alt="">
+  <img src="{{ url_for('customer.static', filename='img/space_c.jpg') }}" alt="">
+  <img src="{{ url_for('customer.static', filename='img/space_d.jpg') }}" alt="">
+</div>
+<div class="space-comment-area">
+  <p>{{ description | linebreaker }}</p>
+</div>
+<div class="nav">
+  <ul>
+    <li><a href="/{{ rentalSpace }}/details">details</a></li>
+    <li><a href="/{{ rentalSpace }}/equipments">equipments</a></li>
+    <li><a href="/{{ rentalSpace }}/budget-plan">budget plan</a></li>
+    <li class="edge-nav"><a href="/{{ rentalSpace }}/review">review</a></li>
+  </ul>
+</div>
+{% include includingPage %}
+<div class="column">
+  <h3>column</h3>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+<script src="{{ url_for('customer.static', filename='js/details.js') }}"></script>
+{% endblock %}
