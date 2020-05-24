@@ -5,31 +5,61 @@
   <meta name="description" content="">
   <meta property="og:url" content="http://127.0.0.1/" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Reservation System" />
+  <meta property="og:title" content="Reservation System Admin" />
   <meta property="og:description" content=" ページのディスクリプション" />
   <meta property="og:site_name" content="" />
   <meta property="og:image" content="" />
-  <!-- <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/style.css') }}"> -->
+  <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/reservations.css') }}">
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
   <title>Admin - Reservation System</title>
 </head>
 <body>
-  <div class="header">
-    <div class="header-inner">
-        <a class="logo" href="/admin"　target="_blank"><img src="{{ url_for('customer.static', filename='img/icon_logo.png') }}" /></a>
-
-        <!--<div class="menue">
-            <a href=""　target="_blank">Menu1</a>
-            <a href=""　target="_blank">Menu2</a>
-            <a href=""　target="_blank">Menu3</a>
-        </div>-->
+  <div class="left-panel">
+    <div class="nav-inner">
+        <a class="nav-logo" href="/admin"　target="_blank">Admin</a>
+        <ul class="nav-menu">
+          <li><a href="/admin"><i class="fas fa-tachometer-alt icon"></i>Dashboard</a></li>
+          <li id="menu-account"><a href="#"><i class="fas fa-user-friends icon"></i>Accounts<!--<i class="fas fa-chevron-down arrow"></i>--></a></li>
+          <div class="sub-menu no-active" id="sub-menu-account">
+            <a href="#">Manage Account</a>
+            <a href="#">Authority</a>
+            <a href="#">My Account</a>
+          </div>
+          <li id="menu-customer"><a href="#"><i class="far fa-address-book icon"></i>Customers<!--<i class="fas fa-chevron-down arrow"></i>--></a></li>
+          <div class="sub-menu no-active" id="sub-menu-customer">
+            <a href="">customers list</a>
+          </div>
+          <li id="menu-reserve"><a href="#"><i class="fas fa-book icon"></i>Reservations<!--<i class="fas fa-chevron-down arrow"></i>--></a></li>
+          <div class="sub-menu no-active" id="sub-menu-reserve">
+            <a href="/admin/reservations/space_a">SPACE A</a>
+            <a href="/admin/reservations/space_b">SPACE B</a>
+            <a href="/admin/reservations/space_c">SPACE C</a>
+            <a href="/admin/reservations/space_d">SPACE D</a>
+          </div>
+        </ul>
     </div>
   </div>
-  <div class="main">
+  <div class="right-panel">
+    <div class="header">
+      <div class="header-left">
+        <i class="fas fa-bell"></i>
+      </div>
+      <div class="header-right">
+        <i class="fas fa-user-circle" id="admin-account">
+          <div id="admin-menu" class="no-active">
+            <a href="{{ url_for('admin.logout') }}">ログアウト</a>
+          </div>
+        </i>
+      </div>
+    </div>
+    <h4 class="navigation">{{ navigation }}</h4>
+    <div class="main-wrap">
 {% block content %}
 <!-- ここに個別部分が挿入される -->
 {% endblock %}
+    </div>
   </div>
-  <div class="footer">
-  </div>
+<script src="{{ url_for('admin.static', filename='js/main.js') }}"></script>
 </body>
 </html>

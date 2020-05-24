@@ -39,11 +39,11 @@ def checkSpaceName(rentalSpace):
 
 def getSpaceName(rentalSpace):
     spaceName = 'SPACE A'
-    if session['rentalSpace'] == 'space_b':
+    if rentalSpace == 'space_b':
         spaceName = 'SPACE B'
-    elif session['rentalSpace'] == 'space_c':
+    elif rentalSpace == 'space_c':
         spaceName = 'SPACE C'
-    elif session['rentalSpace'] == 'space_d':
+    elif rentalSpace == 'space_d':
         spaceName = 'SPACE D'
 
     return spaceName
@@ -84,7 +84,7 @@ def index():
 def details(rentalSpace):
     checkSpaceName(rentalSpace)
     session.permanent = True
-    customer.permanent_session_lifetime = timedelta(minutes=int(config.get('WebServer', 'sessionTime'))) # セッションタイムアウトの時間指定
+    # app.permanent_session_lifetime = timedelta(minutes=int(config.get('WebServer', 'sessionTime'))) # セッションタイムアウトの時間指定
 
     exportBookedDates(rentalSpace)
     # スペースの情報を取得
@@ -243,7 +243,7 @@ def result():
         message += '■予約番号\n' + bookingId
         message += '\n■スペース名\n' + spaceName
         message += '\n■レンタル日\n' + (session['datesToBeBooked'][0] if len(session['datesToBeBooked']) == 1 else session['datesToBeBooked'][0] + '~' + session['datesToBeBooked'][-1])
-        message += '\n\n▼ご予約のキャンセルはこちら\nhttp://0.0.0.0/cancel/' + rentalSpace + '\n\n'
+        message += '\n\n▼ご予約のキャンセルはこちら\n' + config.get("WebServer","host") + 'cancel/' + rentalSpace + '\n\n'
         message += '※このメールは自動配信されています。\n'
         message += 'このメールに返信してのお問い合わせなどにはお応えできません。\n'
 
@@ -334,7 +334,7 @@ def register():
         subject = '会員登録'
         message = 'まだ登録は完了していません。\n\n'
         message += '認証コードは ' + tempPass + ' です。\n\n'
-        message += '下記URLから認証ページに移動できます。\nhttp://0.0.0.0/verify'
+        message += '下記URLから認証ページに移動できます。\n' + config.get("WebServer","host") + 'verify'
         sendMail(mail, subject, message)
         return redirect(url_for('customer.verify'))
 

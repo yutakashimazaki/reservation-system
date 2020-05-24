@@ -1,5 +1,7 @@
 import os
 import configparser
+from datetime import timedelta
+
 from flask import Flask, render_template, Markup
 
 # ======================================================
@@ -17,10 +19,13 @@ else :
     sys.exit(1)
 
 # ======================================================
-# アプリ全体の立ち上げ
+# アプリ全体の立ち上げ・セッションキーの指定・セッションタイムアウトの時間
 # ======================================================
 app = Flask(__name__)
+
 app.secret_key = config.get('WebServer', 'sessionKey')
+app.permanent_session_lifetime = timedelta(minutes=int(config.get('WebServer', 'sessionTime'))) # セッションタイムアウトの時間指定
+
 
 # ======================================================
 # 各アプリの登録

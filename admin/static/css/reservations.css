@@ -1,0 +1,53 @@
+/*===================== 右のメイン上部 ====================*/
+.top-wrap {
+  margin: 0;
+  background-color: #fff;
+  width: 100%;
+  height: 300px; /* 仮 */
+  box-shadow: 1px 1px 3px 1px #ddd;
+}
+
+/*===================== 右のメイン下部 ====================*/
+.under-wrap {
+  margin-top: 15px;
+  width: 100%;
+  font-size:0; /* 子要素のinline-blockに勝手にできる隙間を排除 */
+}
+
+.list-fields div{
+  display: inline-block;
+  margin-right: 3px;
+  padding: 25px 0;
+  width: calc(20% - 2.4px);
+  background-color: #fff;
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: 0.1rem;
+  box-shadow: 1px 1px 2px 1px #ddd;
+  color: #222;
+  text-shadow: 1px 1px 1px #ddd;
+  font-weight: 700;
+}
+.list-contents {
+  width: 100%;
+  cursor: pointer;
+}
+.list-contents div{
+  display: inline-block;
+  margin-top: 3px;
+  margin-right: 3px;
+  padding: 7px 7px;
+  width: calc(20% - 2.4px - 14px);
+  background-color: #fafafa;
+  text-align: center;
+  font-size: 12.5px;
+  box-shadow: 1px 1px 2px 1px #ddd;
+  font-weight: 100;
+  color: #777;
+  text-shadow: 1px 1px 1px #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+div.end-list {
+  margin-right: 0;
+}

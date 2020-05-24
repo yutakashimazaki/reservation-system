@@ -1,0 +1,27 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<div class="top-wrap">
+  <div class="calender-block">
+  </div>
+</div>
+<div class="under-wrap">
+  <div class="list-fields">
+    <div>Date</div>
+    <div>Time</div>
+    <div>Name</div>
+    <div>Mail</div>
+    <div class="end-list">Phone</div>
+  </div>
+  {% for reservation in reservationList %}
+    <div class="list-contents" id="reserve-list">
+      <div>{{ reservation.date }}</div>
+      <div>{{ reservation.startTime }} ~ {{ reservation.endTime }}</div>
+      <div>{{ reservation.customerName }}</div>
+      <div>{{ reservation.customerMail }}</div>
+      <div class="end-list">{{ reservation.customerTell }}</div>
+    </div>
+    <div id="reserve-menu">
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

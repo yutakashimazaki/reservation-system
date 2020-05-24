@@ -2,6 +2,8 @@
 
 config.ini
 
+*.csv
+
 test.py
 
 __pycache__/
