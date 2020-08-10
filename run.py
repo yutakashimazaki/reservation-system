@@ -1,8 +1,10 @@
 import os
+import sys
 import configparser
 from datetime import timedelta
 
 from flask import Flask, render_template, Markup
+from waitress import serve
 
 # ======================================================
 # config.ini の読み込み
@@ -60,4 +62,4 @@ def linebreaker(line):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    serve(app, host='127.0.0.1', port=80)

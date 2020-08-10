@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/reservation-system
+hooks:
+  ApplicationStop:
+    - location: scripts/initialize.sh
+  AfterInstall:
+    - location: scripts/afterInstall.sh
+  ApplicationStart:
+    - location: scripts/runApplication.sh
+      timeout: 60
